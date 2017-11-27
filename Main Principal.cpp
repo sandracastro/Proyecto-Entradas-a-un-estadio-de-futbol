@@ -24,7 +24,7 @@
 
 struct Localidad
 {
-	char nombreLocalidad[10];
+	//char nombreLocalidad[10];
 	int capacidad;	
 	int asiento;
 };
@@ -77,6 +77,19 @@ struct Entrada
 //FIN ESTRUCTURAS
 
 
+// LISTAS DOBLES
+struct Nodo
+{
+    int asiento;
+    bool disponibilidad;
+    struct Nodo *siguienteDireccion;
+    struct Nodo *anterior;
+};
+typedef struct Nodo *Lista;
+
+
+
+//
 
 
 // Declaración de los prototipos 
@@ -99,11 +112,32 @@ void portada()
 
 }
 
-int contarAsientosDisponibles(Estadio)
+void llenarDatosEstadio(Estadio &estadio, int capacidad, char nombreEstadio[])
 {
 	
+	estadio.capacidadTotal = capacidad;
+	strcpy(estadio.nombre, nombreEstadio);
+	fflush(stdin);
+	estadio.general.capacidad = (capacidad / 3);	
+	estadio.palco.capacidad = (capacidad / 3);
+	estadio.tribuna.capacidad = (capacidad / 3);
+}
+
+void llenarDatosPartidos(Tiempo fechasPartidos[])
+{
 	
-	return 0;
+	fechasPartidos[0].fPartido.anio = 2017;
+	fechasPartidos[0].fPartido.mes  = 12;
+	fechasPartidos[0].fPartido.dia  = 03;
+	fechasPartidos[0].hPpartido.hora= 15;
+	fechasPartidos[0].hPpartido.minuto= 30;
+	
+	fechasPartidos[1].fPartido.anio = 2017;
+	fechasPartidos[1].fPartido.mes  = 12;
+	fechasPartidos[1].fPartido.dia  = 10;
+	fechasPartidos[1].hPpartido.hora= 12;
+	fechasPartidos[1].hPpartido.minuto= 00;
+	
 }
 
 void informacionParido(const char *partidos[], int numeroPartido, Tiempo fechasPartidos[])
@@ -126,7 +160,10 @@ void informacionParido(const char *partidos[], int numeroPartido, Tiempo fechasP
 
 }
 
-
+void llenarEstadio(Estadio estadio)
+{
+	
+}
 void gotoxy(int x,int y)
 {
 	HANDLE hcon;
@@ -137,11 +174,166 @@ void gotoxy(int x,int y)
 	SetConsoleCursorPosition(hcon,dwPos);
  }
 
+//----- Funciones con Listas Dobles
+
+void ingresarAlFinal(Lista &lista, int asiento)
+{
+	/*
+	Lista punteroAuxiliar1,punteroAuxiliar2;
+	
+    punteroAuxiliar1=new(struct Nodo);
+    punteroAuxiliar1->asiento=asiento;
+    punteroAuxiliar1->disponibilidad = true;
+    */
+    
+/*
+	Lista auxiliarLista = new Nodo();
+	Lista auxiliarLista2 = lista;
+	
+	auxiliarLista->asiento = asiento;
+	auxiliarLista->disponibilidad = true;
+	
+	if (lista == NULL)
+	{
+		auxiliarLista->siguienteDireccion =  NULL;
+		auxiliarLista->anterior = NULL;
+		lista = auxiliarLista;
+	}
+	else
+	{
+		auxiliarLista->siguienteDireccion = auxiliarLista2->siguienteDireccion;
+		auxiliarLista->anterior = auxiliarLista2;
+		auxiliarLista2->siguienteDireccion = auxiliarLista;
+		auxiliarLista2->siguienteDireccion->anterior = auxiliarLista;
+		lista = auxiliarLista2;
+		
+	}
+*/
+
+	if(lista==NULL)
+	{		
+        Lista punteroAuxiliar=new(struct Nodo);
+        punteroAuxiliar->asiento=asiento;
+        punteroAuxiliar->disponibilidad = true;
+        punteroAuxiliar->siguienteDireccion=punteroAuxiliar->anterior=NULL;
+        lista=punteroAuxiliar;
+        printf("\n\nNumero ingresado: %d\n\n", asiento);
+	}
+	else
+	{
+		
+		Lista punteroAuxiliar1,punteroAuxiliar2;
+        punteroAuxiliar1=new(struct Nodo);
+        punteroAuxiliar1->asiento=asiento;
+        punteroAuxiliar1->disponibilidad = true;
+        punteroAuxiliar2=lista;
+        while(punteroAuxiliar2->siguienteDireccion!=NULL)
+		{
+            punteroAuxiliar2=punteroAuxiliar2->siguienteDireccion;
+        }
+        punteroAuxiliar1->siguienteDireccion=punteroAuxiliar2->siguienteDireccion;
+        punteroAuxiliar2->siguienteDireccion=punteroAuxiliar1;
+        punteroAuxiliar1->anterior=punteroAuxiliar2;
+        printf("\n\nNumero ingresado: %d\n\n", asiento);
+	}
+
+    /*
+    
+    if(lista!=NULL)
+	{
+        Lista punteroAuxiliar1, punteroAuxiliar2;
+        //punteroAuxiliar1=new (struct Nodo);
+        //punteroAuxiliar2=new (struct Nodo);
+        punteroAuxiliar1->asiento =asiento;
+        punteroAuxiliar1->disponibilidad = true;
+        
+		punteroAuxiliar2=lista;
+        
+        while(punteroAuxiliar2->siguienteDireccion!=NULL)
+		{
+            punteroAuxiliar2 = punteroAuxiliar2->siguienteDireccion;
+        }
+        punteroAuxiliar1->siguienteDireccion=punteroAuxiliar2->siguienteDireccion;
+        punteroAuxiliar2->siguienteDireccion=punteroAuxiliar1;
+        punteroAuxiliar1->anterior=punteroAuxiliar2;
+        printf("\n\nDato ingresado!\n\n");
+    }else
+	{
+        if(lista==NULL)
+		{
+	        Lista punteroAuxiliar=new(struct Nodo);
+	        punteroAuxiliar->asiento=asiento;
+	        punteroAuxiliar->disponibilidad = true;
+	        punteroAuxiliar->siguienteDireccion=punteroAuxiliar->anterior=NULL;
+	        lista=punteroAuxiliar;
+	        //printf("\n\nPrimer numero ingresado!\n\n");
+    	}
+    }
+    
+    */
+}
+
+void imprimirLista( Lista lista)
+{
+	Lista auxiliarLista = lista;
+	
+	while (auxiliarLista != NULL)
+	{
+		printf(" %d", auxiliarLista->asiento);	
+		auxiliarLista = auxiliarLista->siguienteDireccion;
+	}
+	
+}
+
+void generarLocalidades(Lista &lista, int limite)
+{
+	int i;
+	Lista aux;
+	aux = lista;
+	
+	for(i=1; i<=limite; i++)
+	{
+		ingresarAlFinal(lista, i);
+	}
+	printf("\n");
+	imprimirLista(lista);
+	/*
+	while(aux!= NULL)
+	{
+		printf("%d ", aux->asiento);
+		aux = aux->siguienteDireccion;
+	}
+	*/
+}
+
+
+
+/////////////////////////////////////
 void menuSeleccion(const char *opciones[], int numeroOpciones, const char *partidos[], int numeroPartidos, const char *subOpciones[], int numeroSubOpciones, int coordenada[])
 {
+	
+	Tiempo fechasPartidos[2];
+	Estadio estadio;
+	
+	
 	bool repite = true, aux = true;
 	int tecla=0,x=1,x1=10,i, selec=1,opcion=0;
 	
+	
+	llenarDatosEstadio(estadio, 190 , "Estadio de Sangolqui");				//Inserto la informacion del estadio y partidos
+	estadio.capacidadTotal = 90;
+	llenarDatosPartidos(fechasPartidos);
+	/*
+	for(int j=0; j<2; j++)
+	{
+		printf("\n %d/%d/%d ", fechasPartidos[j].fPartido.anio, fechasPartidos[j].fPartido.mes, fechasPartidos[j].fPartido.dia );	
+	}
+	
+	printf("\n%s", estadio.nombre);
+	printf("\n%d", estadio.general.capacidad);
+	
+	getch();
+	*/
 	do
 	{
 		
@@ -274,6 +466,8 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 								{
 									coordenada[0]= x;					//Indica el numero de Opcion
 									coordenada[1]= selec;				//Indica el numero de SubOpcion
+									
+									informacionParido(partidos, selec-1, fechasPartidos);
 									
 									aux=false;
 									repite=false;
@@ -594,7 +788,7 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 									coordenada[0]= x;					//Indica el numero de Opcion
 									coordenada[1]= selec;				//Indica el numero de SubOpcion
 									
-									printf("\n\nHi");
+									informacionParido(partidos, selec-1, fechasPartidos);
 									
 									aux=false;
 									repite=false;
@@ -923,7 +1117,7 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 									coordenada[0]= x;					//Indica el numero de Opcion
 									coordenada[1]= selec;				//Indica el numero de SubOpcion
 									
-									printf("\n\nHola Opcion 1");
+									informacionParido(partidos, selec-1, fechasPartidos);
 									
 									aux=false;
 									repite=false;
@@ -1186,25 +1380,8 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 
 main()
 {
-	const char *opciones[]={"  Venta de Entradas   ", "Modificacion Entradas  ", "  Eliminacion de Ventas ", "  Consulta de Entradas  ","   Salir del Sistema   "};
-	const char *partidos[]={"  Clan Juvenil VS El Nacional  ", "  IDV VS U. Catolica                "};
-	//const char *fechasPartidos[]={"  2017 / 12 /  03 ", "  2017 / 12 / 10                "};
-	Tiempo fechasPartidos[2];
-	fechasPartidos[0].fPartido.anio = 2017;
-	fechasPartidos[0].fPartido.mes  = 12;
-	fechasPartidos[0].fPartido.dia  = 03;
-	fechasPartidos[0].hPpartido.hora= 15;
-	fechasPartidos[0].hPpartido.minuto= 30;
-	
-	fechasPartidos[1].fPartido.anio = 2017;
-	fechasPartidos[1].fPartido.mes  = 12;
-	fechasPartidos[1].fPartido.dia  = 10;
-	fechasPartidos[1].hPpartido.hora= 12;
-	fechasPartidos[1].hPpartido.minuto= 00;
-	
-	
-
-	
+	const char *opciones[]={"  Venta de Entradas   ", "Modificacion Asiento  ", "  Eliminacion de Ventas ", "  Consulta de Entradas  ","   Salir del Sistema   "};
+	const char *partidos[]={"  Clan Juvenil VS El Nacional  ", "  IDV VS U. Catolica           "};
 	const char *subOpciones[]={"  CEDULA  "};
 	
 	int numeroOpciones = 5;
@@ -1212,10 +1389,13 @@ main()
 	int numeroSubOpciones = 1;
 	int coordenada[2];
 	
+	Lista lista = new Nodo();
 	
+	generarLocalidades(lista, 10);
+	getch();
 	color(15,0);
 	//menuSeleccion(opciones,numeroOpciones, partidos, numeroPartidos, subOpciones, numeroSubOpciones, coordenada );
-	informacionParido(partidos, 1, fechasPartidos);
+	
 	
 	
 }
