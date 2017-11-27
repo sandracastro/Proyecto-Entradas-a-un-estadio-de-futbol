@@ -13,13 +13,73 @@
 #include <conio.h>
 #include <windows.h>
 #include <string.h>
-#include <graphics.h>
+//#include <graphics.h>
 #include <stdlib.h>
 #include "colores.h"
 
 // ATRBUTOS PROPIOS DEL PROGRAMA
 
-	// Declaración de los prototipos 
+
+//ESTRUCTURAS
+
+struct Localidad
+{
+	char nombreLocalidad[10];
+	int capacidad;	
+	int asiento;
+};
+
+struct Estadio
+{
+    char nombre[20];
+	int capacidadTotal;
+	Localidad general, palco, tribuna;
+};
+
+
+struct Cliente
+{
+	long int CI[10];
+	long int numTelefono[10];
+    char Nombre[30];
+};
+
+
+struct Hora
+{
+    int hora;
+    int minuto;
+};
+
+struct Fecha
+{
+    int dia;
+    int mes;
+    int anio;
+};
+
+struct Tiempo
+{
+    Fecha fReservacion;
+    Fecha fPartido;
+    Hora hReservacion;
+    Hora hPpartido;
+};
+
+
+struct Entrada
+{
+    Cliente cliente;
+    Estadio estadio;
+    Tiempo tiempo;
+    float costo;
+};
+//FIN ESTRUCTURAS
+
+
+
+
+// Declaración de los prototipos 
 void gotoxy(int ,int );
 void portada();
 void menu_seleccion(const char *[], int, const char *[], int, const char *[], int , int []);
@@ -38,6 +98,34 @@ void portada()
 	printf("\n\t\tCarrera:\t Ing. Sistemas e informatica");
 
 }
+
+int contarAsientosDisponibles(Estadio)
+{
+	
+	
+	return 0;
+}
+
+void informacionParido(const char *partidos[], int numeroPartido, Tiempo fechasPartidos[])
+{
+	system("cls");
+	printf("\n\t\t\t\t\tCAMPENOATO ECUATORIANO DE FÚTBOL");
+	printf("\n\n\t\t\t\t\t\tESTADIO RUMIÑAHUI");
+	printf("\n\n\t\t\t\t\t\t    FECHA #%d", (21+numeroPartido));
+	printf("\n\t\t\t\t\t     %s", partidos[numeroPartido]);
+	if(fechasPartidos[numeroPartido].hPpartido.minuto == 0)
+	{
+		printf("\n\n\t\t\t\t\t\t%d/%d/%d\t%d:0%d", fechasPartidos[numeroPartido].fPartido.dia, fechasPartidos[numeroPartido].fPartido.mes, fechasPartidos[numeroPartido].fPartido.anio, 
+		fechasPartidos[numeroPartido].hPpartido.hora, fechasPartidos[numeroPartido].hPpartido.minuto);	
+	}
+	else
+	{
+		printf("\n\n\t\t\t\t\t\t%d/%d/%d\t%d:%d", fechasPartidos[numeroPartido].fPartido.dia, fechasPartidos[numeroPartido].fPartido.mes, fechasPartidos[numeroPartido].fPartido.anio, 
+		fechasPartidos[numeroPartido].hPpartido.hora, fechasPartidos[numeroPartido].hPpartido.minuto);
+	}
+
+}
+
 
 void gotoxy(int x,int y)
 {
@@ -506,6 +594,8 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 									coordenada[0]= x;					//Indica el numero de Opcion
 									coordenada[1]= selec;				//Indica el numero de SubOpcion
 									
+									printf("\n\nHi");
+									
 									aux=false;
 									repite=false;
 									break;
@@ -833,6 +923,8 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 									coordenada[0]= x;					//Indica el numero de Opcion
 									coordenada[1]= selec;				//Indica el numero de SubOpcion
 									
+									printf("\n\nHola Opcion 1");
+									
 									aux=false;
 									repite=false;
 									break;
@@ -908,6 +1000,8 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 								{
 									coordenada[0]= x;					//Indica el numero de Opcion
 									coordenada[1]= selec;				//Indica el numero de SubOpcion
+									
+									printf("\n\nHola Opcion 2");
 									
 									aux=false;
 									repite=false;
@@ -1093,7 +1187,24 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 main()
 {
 	const char *opciones[]={"  Venta de Entradas   ", "Modificacion Entradas  ", "  Eliminacion de Ventas ", "  Consulta de Entradas  ","   Salir del Sistema   "};
-	const char *partidos[]={"  Clan Juvenil VS El Nacional  ", "  IDV VS Emelec                "};
+	const char *partidos[]={"  Clan Juvenil VS El Nacional  ", "  IDV VS U. Catolica                "};
+	//const char *fechasPartidos[]={"  2017 / 12 /  03 ", "  2017 / 12 / 10                "};
+	Tiempo fechasPartidos[2];
+	fechasPartidos[0].fPartido.anio = 2017;
+	fechasPartidos[0].fPartido.mes  = 12;
+	fechasPartidos[0].fPartido.dia  = 03;
+	fechasPartidos[0].hPpartido.hora= 15;
+	fechasPartidos[0].hPpartido.minuto= 30;
+	
+	fechasPartidos[1].fPartido.anio = 2017;
+	fechasPartidos[1].fPartido.mes  = 12;
+	fechasPartidos[1].fPartido.dia  = 10;
+	fechasPartidos[1].hPpartido.hora= 12;
+	fechasPartidos[1].hPpartido.minuto= 00;
+	
+	
+
+	
 	const char *subOpciones[]={"  CEDULA  "};
 	
 	int numeroOpciones = 5;
@@ -1103,8 +1214,8 @@ main()
 	
 	
 	color(15,0);
-	menuSeleccion(opciones,numeroOpciones, partidos, numeroPartidos, subOpciones, numeroSubOpciones, coordenada );
-	
+	//menuSeleccion(opciones,numeroOpciones, partidos, numeroPartidos, subOpciones, numeroSubOpciones, coordenada );
+	informacionParido(partidos, 1, fechasPartidos);
 	
 	
 }
