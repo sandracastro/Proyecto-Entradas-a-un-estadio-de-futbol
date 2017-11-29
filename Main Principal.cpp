@@ -13,38 +13,15 @@
 #include <conio.h>
 #include <windows.h>
 #include <string.h>
-//#include <graphics.h>
+#include <ctime>
 #include <stdlib.h>
 #include "colores.h"
+#define N 30
 
 // ATRBUTOS PROPIOS DEL PROGRAMA
 
 
 //ESTRUCTURAS
-
-struct Localidad
-{
-	//char nombreLocalidad[10];
-	int capacidad;	
-	int asiento;
-};
-
-struct Estadio
-{
-    char nombre[20];
-	int capacidadTotal;
-	Localidad general, palco, tribuna;
-};
-
-
-struct Cliente
-{
-	long int CI[10];
-	long int numTelefono[10];
-    char Nombre[30];
-};
-
-
 struct Hora
 {
     int hora;
@@ -66,30 +43,56 @@ struct Tiempo
     Hora hPpartido;
 };
 
+struct Localidad
+{
+	//char nombreLocalidad[10];
+	int capacidad;	
+	int asiento;
+};
+
+struct Estadio
+{
+    char nombre[20];
+	int capacidadTotal;
+	Localidad general, palco, tribuna;
+};
 
 struct Entrada
 {
-    Cliente cliente;
+    //Cliente cliente;
     Estadio estadio;
     Tiempo tiempo;
     float costo;
 };
+
+struct Cliente
+{
+	Entrada entrada[N];
+	long int CI[10];
+	long int Celular[10];
+    char Nombre[30];
+    int Codigo;
+    float total;
+};
+
+
+
+
 //FIN ESTRUCTURAS
 
 
 // LISTAS DOBLES
 struct Nodo
 {
-    int asiento;
     bool disponibilidad;
+    int codigoCliente;
+	int asiento;
     struct Nodo *siguienteDireccion;
     struct Nodo *anterior;
 };
 typedef struct Nodo *Lista;
 
 
-
-//
 
 
 // Declaración de los prototipos 
@@ -99,6 +102,763 @@ void menu_seleccion(const char *[], int, const char *[], int, const char *[], in
 
 
 
+//----- Funciones con Listas Dobles
+
+void ingresarAlFinal(Lista &lista, int asiento)
+{
+	/*
+	Lista punteroAuxiliar1,punteroAuxiliar2;
+	
+    punteroAuxiliar1=new(struct Nodo);
+    punteroAuxiliar1->asiento=asiento;
+    punteroAuxiliar1->disponibilidad = true;
+    */
+    
+/*
+	Lista auxiliarLista = new Nodo();
+	Lista auxiliarLista2 = lista;
+	
+	auxiliarLista->asiento = asiento;
+	auxiliarLista->disponibilidad = true;
+	
+	if (lista == NULL)
+	{
+		auxiliarLista->siguienteDireccion =  NULL;
+		auxiliarLista->anterior = NULL;
+		lista = auxiliarLista;
+	}
+	else
+	{
+		auxiliarLista->siguienteDireccion = auxiliarLista2->siguienteDireccion;
+		auxiliarLista->anterior = auxiliarLista2;
+		auxiliarLista2->siguienteDireccion = auxiliarLista;
+		auxiliarLista2->siguienteDireccion->anterior = auxiliarLista;
+		lista = auxiliarLista2;
+		
+	}
+*/
+
+	Lista auxiliarLista = new Nodo();
+	Lista auxiliarLista2 = lista;
+	
+	auxiliarLista->asiento = asiento;
+	auxiliarLista->disponibilidad = true;
+
+
+	if(lista==NULL)
+	{		
+        Lista punteroAuxiliar=new(struct Nodo);
+        punteroAuxiliar->asiento=asiento;
+        punteroAuxiliar->disponibilidad = true;
+        punteroAuxiliar->siguienteDireccion=punteroAuxiliar->anterior=NULL;
+        lista=punteroAuxiliar;
+        //printf("\n\nNumero ingresado: %d\n\n", asiento);
+	}
+	else
+	{
+		
+		Lista punteroAuxiliar1,punteroAuxiliar2;
+        punteroAuxiliar1=new(struct Nodo);
+        punteroAuxiliar1->asiento=asiento;
+        punteroAuxiliar1->disponibilidad = true;
+        punteroAuxiliar2=lista;
+        while(punteroAuxiliar2->siguienteDireccion!=NULL)
+		{
+            punteroAuxiliar2=punteroAuxiliar2->siguienteDireccion;
+        }
+        punteroAuxiliar1->siguienteDireccion=punteroAuxiliar2->siguienteDireccion;
+        punteroAuxiliar2->siguienteDireccion=punteroAuxiliar1;
+        punteroAuxiliar1->anterior=punteroAuxiliar2;
+        //printf("\n\nNumero ingresado: %d\n\n", asiento);
+	}
+    
+}
+
+void imprimirLista( Lista lista)
+{
+	Lista auxiliarLista = new Nodo();
+	auxiliarLista = lista;
+	/*
+	while(lista && lista->anterior)
+	{
+		printf(" %d", auxiliarLista->asiento);
+		lista = lista->anterior;
+	}
+	printf(" %d", auxiliarLista->asiento);
+	*/
+	
+	
+	printf("\n\n");
+	while (auxiliarLista != NULL && auxiliarLista != NULL)
+	{
+		printf(" %d", auxiliarLista->asiento);	
+		auxiliarLista = auxiliarLista->siguienteDireccion;
+	}
+}
+
+void imprimirEntradasDisponibles( Lista lista)
+{
+	Lista auxiliarLista = new Nodo();
+	auxiliarLista = lista;
+	/*
+	while(lista && lista->anterior)
+	{
+		printf(" %d", auxiliarLista->asiento);
+		lista = lista->anterior;
+	}
+	printf(" %d", auxiliarLista->asiento);
+	*/
+	
+	while (auxiliarLista != NULL && auxiliarLista != NULL)
+	{
+		if(auxiliarLista->disponibilidad == true)
+		{
+			printf(" %d", auxiliarLista->asiento);	
+		}
+		
+		auxiliarLista = auxiliarLista->siguienteDireccion;
+	}
+}
+
+void generarLocalidades(Lista &lista, int limite)
+{
+	int i;
+	Lista aux;
+	aux = lista;
+	/*
+	while(lista && lista->siguienteDireccion)
+	{
+		//printf(" %d", auxiliarLista->asiento);
+		lista = lista->siguienteDireccion;
+	}
+	*/
+	for(i=1; i<=limite; i++)
+	{
+		ingresarAlFinal(lista, i);
+	}
+	//printf("\n");
+	//imprimirLista(lista);
+	/*
+	while(aux!= NULL)
+	{
+		printf("%d ", aux->asiento);
+		aux = aux->siguienteDireccion;
+	}
+	*/
+}
+
+bool disponibilidadAsiento(Lista lista, int asiento)
+{
+	Lista auxiliarLista = new Nodo();
+	auxiliarLista = lista;
+	int contador=0;
+	while (auxiliarLista != NULL && auxiliarLista != NULL)
+	{
+		if(auxiliarLista->disponibilidad == true && auxiliarLista->asiento == asiento)
+		{
+			contador++;
+		}
+		
+		auxiliarLista = auxiliarLista->siguienteDireccion;
+	}
+	if(contador == 0) return false;
+	else return true;
+	
+}
+
+int contarAsientosDisponibles(Lista lista)
+{
+	Lista auxiliarLista = new Nodo();
+	auxiliarLista = lista;
+	int contador=0;
+	
+	printf("\n\n");
+	while (auxiliarLista != NULL && auxiliarLista != NULL)
+	{
+		if(auxiliarLista->disponibilidad == true)
+		{
+			contador++;
+		}	
+		auxiliarLista = auxiliarLista->siguienteDireccion;
+	}
+	return contador;
+}
+
+long int soloNumeros(long int a)
+{
+	char caracter;
+	int i=0;
+
+	fflush(stdin);
+	caracter=getch();
+	while(caracter!=13)
+	{
+		fflush(stdin);
+		if(caracter!=8)//borrar
+		{
+			if((caracter>=48)&&(caracter<=57))//entre 0 y 9
+			{
+				if(caracter!=13)//enter
+				{
+					printf("%c",caracter);
+					fflush(stdin);
+					a=(a*10)+(caracter-48);
+					i++;
+				}
+			}
+		}
+		else
+		{
+			if(i>0)
+			{
+				printf("\b \b");//mueve el cursor a la izquierda
+				a=(a/10);
+				i--;
+			}
+		}
+		caracter=getch();
+	}
+	return a;
+}
+
+void validarCedula(long int data[])
+ {
+ 	long int ci=0;
+ 	long int A[5];
+ 	int i,cociente,CEDULA[10],RES[10],sumar,DS,validar, op=0;
+ 	
+	do
+	{
+		printf("\nIngrese n%cmero de c%cdula:\t",163,130);
+		ci=soloNumeros(ci);
+
+
+
+		if((ci==0000000000)||(ci==1010101010)||(ci==1111111116))
+		{
+			op==0;
+			printf("\n\tUMERO DE CEDULA NO VALIDO\n");
+		}
+		else
+		{
+			for(i=9;i>=0;i--)
+			{
+				cociente=(ci)/10;
+				CEDULA[i]=(ci)%10;
+				ci=cociente;
+			}
+			
+			for(i=0; i<9; i+=2)
+			{
+				RES[i]=CEDULA[i] * 2;
+				if(RES[i]>9)
+				{
+					RES[i]=RES[i] - 9;
+				}
+			}
+			
+			for(i=1;i<9;i+=2)
+			{
+				RES[i]=CEDULA[i];
+			}
+			
+			sumar=0;
+			for(i=0;i<9;i++)
+			{
+				sumar=sumar+RES[i];
+			}
+			
+			DS=((sumar/10)+1)*10;
+			validar=DS-sumar;
+			
+			if(validar==10)
+			{
+				validar=0;
+			}
+			
+			if(validar==CEDULA[9])
+			{
+				op=1;
+			}
+			else
+			{
+				op=0;
+			}
+			
+			if(op==0)
+			{
+				printf("\n\tNUMERO DE CEDULA NO VALIDO\n");
+			}
+				
+		}
+	}while(op==0);
+		for(i=0; i<10; i++)
+	    {
+	    	data[i]=CEDULA[i];
+		}
+ }
+
+char *soloLetras(char A[])
+{
+	char letra;
+	int i=0,l=0;
+	fflush(stdin);
+	letra=getch();
+	while(letra!=13 && i<50)
+	{
+		fflush(stdin);
+		if(letra!=8)
+			{
+				if((letra>=65 && letra<=90)||(letra>=97 && letra<=122)||(letra==32))
+				{
+					if(letra!=13)
+					{
+						printf("%c",letra);
+						fflush(stdin);
+						A[i]=letra;
+						i++;
+					}
+				}
+			}
+			else
+			{
+				l=strlen(A);
+				if(l>0)
+				{
+					printf("\b \b");//mueve el cursor a la izquierda
+					A[l-1]='\0';
+					i--;
+				}
+			}
+			letra=getch();
+	}
+	A[i]='\0';
+	
+	return A;
+}
+
+void validarNombre(char A[])
+ {
+	 	printf("\nIngrese su Nombre:\t\t");
+		A=soloLetras(A);
+ }
+
+void validarCelular(long int N_telefono[])
+ {
+ 	long int n_celular=0;
+ 	int i,coc,Celular[10],op=0;
+ 	do
+ 	{
+ 		op=0;
+ 		n_celular=0;
+ 		printf("\nIngrese n%cmero de celular:\t",163);
+	 	n_celular=soloNumeros(n_celular);
+	 	for(i=9;i>=0;i--)
+	 	{
+	 		coc=n_celular/10;
+	 		Celular[i]=n_celular%10;
+	 		n_celular=coc;
+		 }
+		 if(Celular[0]==0 && Celular[1]==9)
+		 {
+		 	op=1;
+		 }
+		 else
+		 {
+		 	op=0;
+		 	printf("\n\tNumero de celular invalido");
+		 }
+		for(i=0;i<10;i++)
+		{
+			N_telefono[i]=Celular[i];
+		}
+	 }while(op==0);
+
+ }
+
+void ingresoDatos(Cliente t[], int x, Lista &General, Lista &Palco, Lista &Tribuna)
+{
+	//Lista
+	Lista auxiliarLista = new Nodo();
+	
+	time_t now;
+	struct tm nowLocal;
+	now = time(NULL);
+	nowLocal = *localtime(&now);
+	//Cursor
+	int ejeX=1;
+	bool repetirMove=true;
+	int tecla2=0;
+	//Generales
+	int a=0,val_ci=0,i,j,k;
+	long int ci[10];
+	long int entradasRequeridas;
+	int numeroAsiento=0;
+	float totalPago=0;
+	
+	system("cls");
+	
+	do
+	{
+		system("cls");
+		printf("\nLocalidades Disponibles");
+		printf("\n\tHora Local\t%d : %d : %d", nowLocal.tm_hour, nowLocal.tm_min, nowLocal.tm_sec);
+		printf("\n\nGenerales:\n\t");
+		imprimirEntradasDisponibles(General);
+		printf("\n\nPalcos:\n\t");
+		imprimirEntradasDisponibles(Palco);
+		printf("\n\nTribunas:\n\t");
+		imprimirEntradasDisponibles(Tribuna);
+		
+		
+		if(ejeX ==1)
+		{
+			color(7,3);
+			gotoxy(30, 20);
+			printf("GENERAL");
+			color(15,0);
+			gotoxy(70, 20);
+			printf("PALCO");
+			gotoxy(100, 20);
+			printf("TRIBUNA");
+		}
+		
+		if(ejeX ==2)
+		{
+			gotoxy(30, 20);
+			printf("GENERAL");
+			color(7,3);
+			gotoxy(70, 20);
+			printf("PALCO");
+			color(15,0);
+			gotoxy(100, 20);
+			printf("TRIBUNA");
+		}
+		
+		if(ejeX ==3)
+		{
+			gotoxy(30, 20);
+			printf("GENERAL");
+			gotoxy(70, 20);
+			printf("PALCO");
+			color(7,3);
+			gotoxy(100, 20);
+			printf("TRIBUNA");
+			color(15,0);
+		}
+		
+		
+		
+		do											// Metodo para que me permita ingresar solo las flechas o ENTER
+		{
+			fflush(stdin);
+			tecla2=getch();
+		}while( (tecla2!=77)&&(tecla2!=75)&&(tecla2!=13) );
+		
+		switch(tecla2)
+		{
+			case 75:								//Izquierda
+			{
+				ejeX--;
+				if(ejeX<1)
+				{
+					ejeX = 3;
+				}
+				break;
+			}
+			
+			case 77:
+			{
+				ejeX++;
+				if(ejeX>3)
+				{
+					ejeX = 1;
+				}
+				break;
+			}
+			
+			case 13:
+			{
+				repetirMove = false;
+				break;
+			}		
+		}
+		
+	}while(repetirMove);
+	
+	if(ejeX == 1)
+	{
+		if(contarAsientosDisponibles(General)>0)
+		{
+			system("cls");
+			printf("\n\n\t\t\t\t\tIngreso de Datos\n");
+			validarCedula( t[x].CI);
+			t[x].Codigo = x;
+			validarNombre(t[x].Nombre);
+			validarCelular(t[x].Celular);
+
+			do
+			{
+				system("cls");
+				printf("\nLocalidades Disponibles");
+				printf("\n\nGenerales:\n\t");
+				imprimirEntradasDisponibles(General);
+	
+				printf("\nNumero de Entradas a comprar:\t");
+				k=0;
+				entradasRequeridas = soloNumeros(k);
+				//printf("\n%d", entradasRequeridas);
+				if((entradasRequeridas > contarAsientosDisponibles(General) || entradasRequeridas < 1))
+					printf("\n\nNumero de entradas no validas");
+				
+			}while(entradasRequeridas > contarAsientosDisponibles(General) || entradasRequeridas < 1);
+			//entradasRequeridas = soloNumeros(entradasRequeridas);
+			//printf("\nEntradas Disponibles:\t%d", contarAsientosDisponibles(General));
+			for(j=1; j<=entradasRequeridas; j++)
+			{
+				auxiliarLista = General;
+				do
+				{
+					printf("\nIngrese el numero de Asiento:\t");
+					k=0;
+					numeroAsiento = soloNumeros(k);
+					if((disponibilidadAsiento(General, numeroAsiento)== false))
+						printf("\n\tAsiento no disponible");
+					//auxiliarLista = auxiliarLista->siguienteDireccion;
+				}while(disponibilidadAsiento(General, numeroAsiento)== false);
+				//printf("\n%d", numeroAsiento);
+				
+				while (auxiliarLista != NULL && auxiliarLista != NULL)
+				{
+					if(auxiliarLista->disponibilidad == true && auxiliarLista->asiento == numeroAsiento)
+					{
+						auxiliarLista->disponibilidad = false;
+						auxiliarLista->codigoCliente = x;
+	
+						t[x].entrada[j].tiempo.fReservacion.dia= nowLocal.tm_mday;
+						t[x].entrada[j].tiempo.fReservacion.mes= nowLocal.tm_mon;
+						t[x].entrada[j].tiempo.fReservacion.anio= nowLocal.tm_year;
+						
+						t[x].entrada[j].tiempo.hReservacion.hora= nowLocal.tm_hour;
+						t[x].entrada[j].tiempo.hReservacion.minuto= nowLocal.tm_min;
+						t[x].entrada[j].costo = 5;				
+					}
+					
+					auxiliarLista = auxiliarLista->siguienteDireccion;
+				}
+			}
+			/*
+			for(int y=0; y<N; y+++)
+			{
+				totalPago = totalPago + t[x].entrada[y].costo;
+			}
+			t[x].total = total;*/
+			/*
+			printf("\n");
+			imprimirEntradasDisponibles(General);
+			printf("\n\tHora Local\t%d : %d ", t[x].entrada[2].tiempo.hReservacion.hora, t[x].entrada[2].tiempo.hReservacion.minuto);
+			*/
+				
+		}
+		else
+		{
+			printf("\n\t\tENTRADAS AGOTADAS PARA ESTA LOCALIDAD");
+			getch();
+		}
+
+	}
+	
+	
+	
+	if(ejeX == 2)
+	{
+		
+		if(contarAsientosDisponibles(Palco)>0)
+		{
+			system("cls");
+			printf("\n\n\t\t\t\t\tIngreso de Datos\n");
+			validarCedula( t[x].CI);
+			t[x].Codigo = x;
+			validarNombre(t[x].Nombre);
+			validarCelular(t[x].Celular);
+			
+			
+			
+			do
+			{
+				system("cls");
+				printf("\nLocalidades Disponibles");
+				printf("\n\nPalcos:\n\t");
+				imprimirEntradasDisponibles(Palco);
+				printf("\nNumero de Entradas a comprar:\t");
+				k=0;
+				entradasRequeridas = soloNumeros(k);
+				//printf("\n%d", entradasRequeridas);
+				if((entradasRequeridas > contarAsientosDisponibles(Palco) || entradasRequeridas < 1))
+					printf("\n\nNumero de entradas no validas");
+			}while(entradasRequeridas > contarAsientosDisponibles(Palco) || entradasRequeridas < 1);
+			//entradasRequeridas = soloNumeros(entradasRequeridas);
+			//printf("\nEntradas Disponibles:\t%d", contarAsientosDisponibles(General));
+			for(j=1; j<=entradasRequeridas; j++)
+			{
+				auxiliarLista = Palco;
+				do
+				{
+					printf("\nIngrese el numero de Asiento:\t");
+					k=0;
+					numeroAsiento = soloNumeros(k);
+					if((disponibilidadAsiento(Palco, numeroAsiento)== false))
+						printf("\n\tAsiento no disponible");
+				}while(disponibilidadAsiento(Palco, numeroAsiento)== false);
+				
+				while (auxiliarLista != NULL && auxiliarLista != NULL)
+				{
+					if(auxiliarLista->disponibilidad == true && auxiliarLista->asiento == numeroAsiento)
+					{
+						auxiliarLista->disponibilidad = false;
+						auxiliarLista->codigoCliente = x;
+						
+						t[x].entrada[j].tiempo.fReservacion.dia= nowLocal.tm_mday;
+						t[x].entrada[j].tiempo.fReservacion.mes= nowLocal.tm_mon;
+						t[x].entrada[j].tiempo.fReservacion.anio= nowLocal.tm_year;
+						
+						t[x].entrada[j].tiempo.hReservacion.hora= nowLocal.tm_hour;
+						t[x].entrada[j].tiempo.hReservacion.minuto= nowLocal.tm_min;
+						
+					}
+					
+					auxiliarLista = auxiliarLista->siguienteDireccion;
+				}	
+			}
+			//printf("\n");
+			//imprimirEntradasDisponibles(Palco);
+		
+			
+		}
+		else
+		{
+			printf("\n\t\tENTRADAS AGOTADAS PARA ESTA LOCALIDAD");
+			getch();
+		}
+	
+	}
+	
+	
+	if(ejeX == 3)
+	{
+		
+		if(contarAsientosDisponibles(Tribuna)>0)
+		{
+			system("cls");
+			printf("\n\n\t\t\t\t\tIngreso de Datos\n");
+			validarCedula( t[x].CI);
+			t[x].Codigo = x;
+			validarNombre(t[x].Nombre);
+			validarCelular(t[x].Celular);
+		
+			do
+			{
+				system("cls");
+				printf("\nLocalidades Disponibles");
+				printf("\n\nTribunas:\n\t");
+				imprimirEntradasDisponibles(Tribuna);
+				printf("\nNumero de Entradas a comprar:\t");
+				k=0;
+				entradasRequeridas = soloNumeros(k);
+				//printf("\n%d", entradasRequeridas);
+				if((entradasRequeridas > contarAsientosDisponibles(Tribuna) || entradasRequeridas < 1))
+					printf("\n\nNumero de entradas no validas");
+			}while(entradasRequeridas > contarAsientosDisponibles(Tribuna) || entradasRequeridas < 1);
+			//entradasRequeridas = soloNumeros(entradasRequeridas);
+			//printf("\nEntradas Disponibles:\t%d", contarAsientosDisponibles(General));
+			for(j=1; j<=entradasRequeridas; j++)
+			{
+				auxiliarLista = Tribuna;
+				do
+				{
+					printf("\nIngrese el numero de Asiento:\t");
+					k=0;
+					numeroAsiento = soloNumeros(k);
+					if((disponibilidadAsiento(Tribuna, numeroAsiento)== false))
+						printf("\n\tAsiento no disponible");
+					//auxiliarLista = auxiliarLista->siguienteDireccion;
+				}while(disponibilidadAsiento(Tribuna, numeroAsiento)== false);
+				//printf("\n%d", numeroAsiento);
+				
+				while (auxiliarLista != NULL && auxiliarLista != NULL)
+				{
+					if(auxiliarLista->disponibilidad == true && auxiliarLista->asiento == numeroAsiento)
+					{
+						auxiliarLista->disponibilidad = false;
+						auxiliarLista->codigoCliente = x;
+	
+						t[x].entrada[j].tiempo.fReservacion.dia= nowLocal.tm_mday;
+						t[x].entrada[j].tiempo.fReservacion.mes= nowLocal.tm_mon;
+						t[x].entrada[j].tiempo.fReservacion.anio= nowLocal.tm_year;
+						
+						t[x].entrada[j].tiempo.hReservacion.hora= nowLocal.tm_hour;
+						t[x].entrada[j].tiempo.hReservacion.minuto= nowLocal.tm_min;
+					}
+					
+					auxiliarLista = auxiliarLista->siguienteDireccion;
+				}
+			}
+			/*printf("\n");
+			imprimirEntradasDisponibles(Tribuna);
+			printf("\n\tHora Local\t%d : %d ", t[x].entrada[2].tiempo.hReservacion.hora, t[x].entrada[2].tiempo.hReservacion.minuto);*/
+			
+		}
+		else
+		{
+			printf("\n\t\tENTRADAS AGOTADAS PARA ESTA LOCALIDAD");
+			getch();
+		}
+	}
+
+	for(int y=0; y<N; y++)						// cALCULA EL MONTO FINAL A PAGAR
+	{
+		totalPago = totalPago + t[x].entrada[y].costo;
+	}
+	t[x].total = totalPago;
+	
+ }
+
+bool informarAsientosDisponibles( Lista General,  Lista Palco, Lista Tribuna, Lista General2,  Lista Palco2, Lista Tribuna2, int selector)
+{
+	printf("\n\n Asientos Disponibles");
+	int contador=0;
+	
+	if(selector == 0)
+	{
+		printf("\tGeneral:\t%d\t$5", contarAsientosDisponibles(General));
+		printf("\tPalco:\t\t%d\t$15", contarAsientosDisponibles(Palco));
+		printf("\tTribuna:\t%d\t$10", contarAsientosDisponibles(Tribuna));
+		
+		contador = contador + contarAsientosDisponibles(General);
+		contador = contador + contarAsientosDisponibles(Palco);
+		contador = contador + contarAsientosDisponibles(Tribuna);
+	}
+	else
+	{
+		printf("\tGeneral:\t%d\t$5", contarAsientosDisponibles(General2));
+		printf("\tPalco:\t\t%d\t$15", contarAsientosDisponibles(Palco2));
+		printf("\tTribuna:\t%d\t$10", contarAsientosDisponibles(Tribuna2));
+		
+		contador = contador + contarAsientosDisponibles(General2);
+		contador = contador + contarAsientosDisponibles(Palco2);
+		contador = contador + contarAsientosDisponibles(Tribuna2);
+	}
+	
+	if(contador == 0)
+	{
+		printf("\n\n\t\t\tENTRADAS AGOTADAS");
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
 // DESARROLLO DE LOS MÉTODOS DEL PROGRAMA
 void portada()
 {
@@ -112,7 +872,7 @@ void portada()
 
 }
 
-void llenarDatosEstadio(Estadio &estadio, int capacidad, char nombreEstadio[])
+void llenarDatosEstadio(Estadio &estadio, int capacidad, char nombreEstadio[], Lista &General,  Lista &Palco, Lista &Tribuna)
 {
 	
 	estadio.capacidadTotal = capacidad;
@@ -121,6 +881,14 @@ void llenarDatosEstadio(Estadio &estadio, int capacidad, char nombreEstadio[])
 	estadio.general.capacidad = (capacidad / 3);	
 	estadio.palco.capacidad = (capacidad / 3);
 	estadio.tribuna.capacidad = (capacidad / 3);
+	
+	generarLocalidades(General, estadio.general.capacidad);
+	generarLocalidades(Palco, estadio.palco.capacidad);
+	generarLocalidades(Tribuna, estadio.tribuna.capacidad);
+	
+	imprimirLista(General);
+	imprimirLista(Palco);
+	imprimirLista(Tribuna);
 }
 
 void llenarDatosPartidos(Tiempo fechasPartidos[])
@@ -160,10 +928,6 @@ void informacionParido(const char *partidos[], int numeroPartido, Tiempo fechasP
 
 }
 
-void llenarEstadio(Estadio estadio)
-{
-	
-}
 void gotoxy(int x,int y)
 {
 	HANDLE hcon;
@@ -174,155 +938,39 @@ void gotoxy(int x,int y)
 	SetConsoleCursorPosition(hcon,dwPos);
  }
 
-//----- Funciones con Listas Dobles
-
-void ingresarAlFinal(Lista &lista, int asiento)
-{
-	/*
-	Lista punteroAuxiliar1,punteroAuxiliar2;
-	
-    punteroAuxiliar1=new(struct Nodo);
-    punteroAuxiliar1->asiento=asiento;
-    punteroAuxiliar1->disponibilidad = true;
-    */
-    
-/*
-	Lista auxiliarLista = new Nodo();
-	Lista auxiliarLista2 = lista;
-	
-	auxiliarLista->asiento = asiento;
-	auxiliarLista->disponibilidad = true;
-	
-	if (lista == NULL)
-	{
-		auxiliarLista->siguienteDireccion =  NULL;
-		auxiliarLista->anterior = NULL;
-		lista = auxiliarLista;
-	}
-	else
-	{
-		auxiliarLista->siguienteDireccion = auxiliarLista2->siguienteDireccion;
-		auxiliarLista->anterior = auxiliarLista2;
-		auxiliarLista2->siguienteDireccion = auxiliarLista;
-		auxiliarLista2->siguienteDireccion->anterior = auxiliarLista;
-		lista = auxiliarLista2;
-		
-	}
-*/
-
-	if(lista==NULL)
-	{		
-        Lista punteroAuxiliar=new(struct Nodo);
-        punteroAuxiliar->asiento=asiento;
-        punteroAuxiliar->disponibilidad = true;
-        punteroAuxiliar->siguienteDireccion=punteroAuxiliar->anterior=NULL;
-        lista=punteroAuxiliar;
-        printf("\n\nNumero ingresado: %d\n\n", asiento);
-	}
-	else
-	{
-		
-		Lista punteroAuxiliar1,punteroAuxiliar2;
-        punteroAuxiliar1=new(struct Nodo);
-        punteroAuxiliar1->asiento=asiento;
-        punteroAuxiliar1->disponibilidad = true;
-        punteroAuxiliar2=lista;
-        while(punteroAuxiliar2->siguienteDireccion!=NULL)
-		{
-            punteroAuxiliar2=punteroAuxiliar2->siguienteDireccion;
-        }
-        punteroAuxiliar1->siguienteDireccion=punteroAuxiliar2->siguienteDireccion;
-        punteroAuxiliar2->siguienteDireccion=punteroAuxiliar1;
-        punteroAuxiliar1->anterior=punteroAuxiliar2;
-        printf("\n\nNumero ingresado: %d\n\n", asiento);
-	}
-
-    /*
-    
-    if(lista!=NULL)
-	{
-        Lista punteroAuxiliar1, punteroAuxiliar2;
-        //punteroAuxiliar1=new (struct Nodo);
-        //punteroAuxiliar2=new (struct Nodo);
-        punteroAuxiliar1->asiento =asiento;
-        punteroAuxiliar1->disponibilidad = true;
-        
-		punteroAuxiliar2=lista;
-        
-        while(punteroAuxiliar2->siguienteDireccion!=NULL)
-		{
-            punteroAuxiliar2 = punteroAuxiliar2->siguienteDireccion;
-        }
-        punteroAuxiliar1->siguienteDireccion=punteroAuxiliar2->siguienteDireccion;
-        punteroAuxiliar2->siguienteDireccion=punteroAuxiliar1;
-        punteroAuxiliar1->anterior=punteroAuxiliar2;
-        printf("\n\nDato ingresado!\n\n");
-    }else
-	{
-        if(lista==NULL)
-		{
-	        Lista punteroAuxiliar=new(struct Nodo);
-	        punteroAuxiliar->asiento=asiento;
-	        punteroAuxiliar->disponibilidad = true;
-	        punteroAuxiliar->siguienteDireccion=punteroAuxiliar->anterior=NULL;
-	        lista=punteroAuxiliar;
-	        //printf("\n\nPrimer numero ingresado!\n\n");
-    	}
-    }
-    
-    */
-}
-
-void imprimirLista( Lista lista)
-{
-	Lista auxiliarLista = lista;
-	
-	while (auxiliarLista != NULL)
-	{
-		printf(" %d", auxiliarLista->asiento);	
-		auxiliarLista = auxiliarLista->siguienteDireccion;
-	}
-	
-}
-
-void generarLocalidades(Lista &lista, int limite)
-{
-	int i;
-	Lista aux;
-	aux = lista;
-	
-	for(i=1; i<=limite; i++)
-	{
-		ingresarAlFinal(lista, i);
-	}
-	printf("\n");
-	imprimirLista(lista);
-	/*
-	while(aux!= NULL)
-	{
-		printf("%d ", aux->asiento);
-		aux = aux->siguienteDireccion;
-	}
-	*/
-}
-
-
-
 /////////////////////////////////////
 void menuSeleccion(const char *opciones[], int numeroOpciones, const char *partidos[], int numeroPartidos, const char *subOpciones[], int numeroSubOpciones, int coordenada[])
 {
 	
 	Tiempo fechasPartidos[2];
-	Estadio estadio;
+	Estadio estadio[2];
+	Cliente cliente[N];
 	
+	Lista General1 = new Nodo();
+	Lista Palco1 = new Nodo();
+	Lista Tribuna1 = new Nodo();
+	General1 = Palco1 = Tribuna1 = NULL;
+	int contadorPartido1=0, contadorPartido2=0;
+	
+	Lista General2 = new Nodo();
+	Lista Palco2 = new Nodo();
+	Lista Tribuna2 = new Nodo();
+	General2 = Palco2 = Tribuna2 = NULL;
 	
 	bool repite = true, aux = true;
 	int tecla=0,x=1,x1=10,i, selec=1,opcion=0;
 	
+	int tecla2=0, moveX=1;
+	bool repetirMove = true;
 	
-	llenarDatosEstadio(estadio, 190 , "Estadio de Sangolqui");				//Inserto la informacion del estadio y partidos
-	estadio.capacidadTotal = 90;
+	
+	llenarDatosEstadio(estadio[0], N , "Estadio de Sangolqui", General1, Palco1, Tribuna1);				//Inserto la informacion del estadio y partidos
+	estadio[0].capacidadTotal = N;
 	llenarDatosPartidos(fechasPartidos);
+	llenarDatosEstadio(estadio[1], N , "Estadio de Sangolqui", General2, Palco2, Tribuna2);				//Inserto la informacion del estadio y partidos
+	estadio[0].capacidadTotal = N;
+
+	//generarLocalidades()
 	/*
 	for(int j=0; j<2; j++)
 	{
@@ -467,10 +1115,107 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 									coordenada[0]= x;					//Indica el numero de Opcion
 									coordenada[1]= selec;				//Indica el numero de SubOpcion
 									
-									informacionParido(partidos, selec-1, fechasPartidos);
+									
+									
+									if(informarAsientosDisponibles(General1, Palco1, Tribuna1, General2, Palco2, Tribuna2, selec - 1) == true)
+									{
+										//printf("\n\nAsientos Disponibles ");
+										
+										do
+										{
+											system("cls");
+											informacionParido(partidos, selec-1, fechasPartidos);
+											informarAsientosDisponibles(General1, Palco1, Tribuna1, General2, Palco2, Tribuna2, selec - 1);
+											
+											
+											if(moveX ==1)
+											{
+												color(7,3);
+												gotoxy(30, 20);
+												printf("COMPRAR");
+												color(15,0);
+												gotoxy(80, 20);
+												printf("CANCELAR");
+												
+											}
+											else
+											{
+												gotoxy(30, 20);
+												printf("COMPRAR");
+												color(7,3);
+												gotoxy(80, 20);
+												printf("CANCELAR");
+												color(15,0);
+											}
+											
+											
+											
+											do											// Metodo para que me permita ingresar solo las flechas o ENTER
+											{
+												fflush(stdin);
+												tecla2=getch();
+											}while( (tecla2!=77)&&(tecla2!=75)&&(tecla2!=13) );
+											
+											switch(tecla2)
+											{
+												case 75:								//Izquierda
+												{
+													moveX--;
+													if(moveX<1)
+													{
+														moveX = 2;
+													}
+													break;
+												}
+												
+												case 77:
+												{
+													moveX++;
+													if(moveX>2)
+													{
+														moveX = 1;
+													}
+													break;
+												}
+												
+												case 13:
+												{
+													
+													if((selec - 1) ==0 && (moveX-1)==0)
+													{
+														
+														ingresoDatos(cliente, contadorPartido1 , General1, Palco1, Tribuna1);
+														contadorPartido1++;
+													}
+													else
+													{
+														if((selec - 1) ==1 && (moveX-1)==0)
+														ingresoDatos(cliente, contadorPartido2, General2, Palco2, Tribuna2);
+														contadorPartido2++;
+													}
+													
+													
+													repetirMove = false;
+													break;
+												}		
+											}
+											
+										}while(repetirMove);
+										
+										
+									}
+									else
+									{
+										printf("\n\nEntradas Agotadas");
+										getch();
+									}
+									
+									
+									
+
 									
 									aux=false;
-									repite=false;
+									repite=true;
 									break;
 								}
 								
@@ -1388,13 +2133,13 @@ main()
 	int numeroPartidos = 2;
 	int numeroSubOpciones = 1;
 	int coordenada[2];
-	
+	/*
 	Lista lista = new Nodo();
-	
+	lista = NULL;
 	generarLocalidades(lista, 10);
-	getch();
+	getch();*/
 	color(15,0);
-	//menuSeleccion(opciones,numeroOpciones, partidos, numeroPartidos, subOpciones, numeroSubOpciones, coordenada );
+	menuSeleccion(opciones,numeroOpciones, partidos, numeroPartidos, subOpciones, numeroSubOpciones, coordenada );
 	
 	
 	
