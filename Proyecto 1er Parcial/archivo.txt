@@ -1,0 +1,22 @@
+
+					UNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE
+						ESTRUCTURA DE DATOS 2479
+				      SISTEMA DE VENTAS PARA UN ESTADIO DE FUTBOL
+
+		Autores:	 Bryan Tualle  y  Sandra Castro
+		Fecha:		 2017/11/21
+		Profesor:	 Ing. Edgar Fernando Solis Acosta
+		Carrera:	 Ing. Sistemas e informatica
+bryan con Cedula 0 adquirio las entradas
+
+General:
+
+Palco:
+
+Tribuna:
+
+General:
+
+Palco:
+
+Tribuna:

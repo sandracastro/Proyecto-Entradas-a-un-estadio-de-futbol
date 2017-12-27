@@ -16,6 +16,7 @@
 #include <ctime>
 #include <stdlib.h>
 #include "colores.h"
+#include "imagen.h"
 #define N 30
 
 // ATRBUTOS PROPIOS DEL PROGRAMA
@@ -73,6 +74,7 @@ struct Cliente
     char Nombre[30];
     int Codigo;
     float total;
+    long int cedula;
 };
 
 
@@ -89,6 +91,7 @@ struct Nodo
 	int asiento;
     struct Nodo *siguienteDireccion;
     struct Nodo *anterior;
+    long int cedula;
 };
 typedef struct Nodo *Lista;
 
@@ -282,6 +285,17 @@ int contarAsientosDisponibles(Lista lista)
 		auxiliarLista = auxiliarLista->siguienteDireccion;
 	}
 	return contador;
+}
+
+long int convertirCedula(long int cedula[])
+{
+	long int ced=0;
+	
+	for(int i=0;i<10; i++)
+	{
+		ced = (ced*10)+cedula[i]; 
+	}
+	return ced;
 }
 
 long int soloNumeros(long int a)
@@ -634,6 +648,9 @@ void ingresoDatos(Cliente t[], int x, Lista &General, Lista &Palco, Lista &Tribu
 					{
 						auxiliarLista->disponibilidad = false;
 						auxiliarLista->codigoCliente = x;
+						auxiliarLista->cedula = convertirCedula(t[x].CI);
+						//printf("\n\nCedula convertida: %d",auxiliarLista->cedula );
+						//getch();
 	
 						t[x].entrada[j].tiempo.fReservacion.dia= nowLocal.tm_mday;
 						t[x].entrada[j].tiempo.fReservacion.mes= nowLocal.tm_mon;
@@ -717,6 +734,7 @@ void ingresoDatos(Cliente t[], int x, Lista &General, Lista &Palco, Lista &Tribu
 					{
 						auxiliarLista->disponibilidad = false;
 						auxiliarLista->codigoCliente = x;
+						auxiliarLista->cedula = convertirCedula(t[x].CI);
 						
 						t[x].entrada[j].tiempo.fReservacion.dia= nowLocal.tm_mday;
 						t[x].entrada[j].tiempo.fReservacion.mes= nowLocal.tm_mon;
@@ -791,7 +809,8 @@ void ingresoDatos(Cliente t[], int x, Lista &General, Lista &Palco, Lista &Tribu
 					{
 						auxiliarLista->disponibilidad = false;
 						auxiliarLista->codigoCliente = x;
-	
+						auxiliarLista->cedula = convertirCedula(t[x].CI);
+						
 						t[x].entrada[j].tiempo.fReservacion.dia= nowLocal.tm_mday;
 						t[x].entrada[j].tiempo.fReservacion.mes= nowLocal.tm_mon;
 						t[x].entrada[j].tiempo.fReservacion.anio= nowLocal.tm_year;
@@ -822,7 +841,22 @@ void ingresoDatos(Cliente t[], int x, Lista &General, Lista &Palco, Lista &Tribu
 	t[x].total = totalPago;
 	
  }
+void imagen()
+{
 
+    hConWnd = GetConsoleWndHandle();
+    if (hConWnd)
+    {
+        // select a bitmap file you have or use one of the files in the Windows folder
+        // filename, handle, ID, ulcX, ulcY, width, height   0,0 auto-adjusts
+        BCX_Bitmap("LOGO.bmp",hConWnd,123,230,65,0,0);
+        //system("pause>nul");
+        Sleep(3000);
+        //getchar();
+    }
+    system("cls");
+
+}
 bool informarAsientosDisponibles( Lista General,  Lista Palco, Lista Tribuna, Lista General2,  Lista Palco2, Lista Tribuna2, int selector)
 {
 	printf("\n\n Asientos Disponibles");
@@ -885,11 +919,153 @@ void llenarDatosEstadio(Estadio &estadio, int capacidad, char nombreEstadio[], L
 	generarLocalidades(General, estadio.general.capacidad);
 	generarLocalidades(Palco, estadio.palco.capacidad);
 	generarLocalidades(Tribuna, estadio.tribuna.capacidad);
-	
+	/*
 	imprimirLista(General);
 	imprimirLista(Palco);
-	imprimirLista(Tribuna);
+	imprimirLista(Tribuna);*/
 }
+
+void imprimirArchivo(Lista General,  Lista Palco, Lista Tribuna, Lista General2,  Lista Palco2, Lista Tribuna2, Cliente cliente)
+{
+
+	int i=0;
+	char buffer[80]={0};
+	Lista auxiliarLista1 = new Nodo();
+	Lista auxiliarLista2 = new Nodo();
+	Lista auxiliarLista3 = new Nodo();
+	Lista auxiliarLista4 = new Nodo();
+	Lista auxiliarLista5 = new Nodo();
+	Lista auxiliarLista6 = new Nodo();
+	
+	auxiliarLista1 = General;
+	auxiliarLista2 = Palco;
+	auxiliarLista3 = Tribuna;
+	auxiliarLista4 = General2;
+	auxiliarLista5 = Palco2;
+	auxiliarLista6 = Tribuna2;
+
+	printf("\n\t\t\t\t\tUNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE");
+	printf("\n\t\t\t\t\t\tESTRUCTURA DE DATOS 2479");
+	printf("\n\t\t\t\t      SISTEMA DE VENTAS PARA UN ESTADIO DE FUTBOL");
+	printf("\n\n\t\tAutores:\t Bryan Tualle  y  Sandra Castro");
+	printf("\n\t\tFecha:\t\t 2017/11/21");
+	printf("\n\t\tProfesor:\t Ing. Edgar Fernando Solis Acosta");
+	printf("\n\t\tCarrera:\t Ing. Sistemas e informatica");
+	/*
+	while(lista && lista->anterior)
+	{
+		printf(" %d", auxiliarLista->asiento);
+		lista = lista->anterior;
+	}
+	printf(" %d", auxiliarLista->asiento);
+	*/
+	
+	auxiliarLista1 = General;
+	auxiliarLista2 = Palco;
+	auxiliarLista3 = Tribuna;
+	auxiliarLista4 = General2;
+	auxiliarLista5 = Palco2;
+	auxiliarLista6 = Tribuna2;
+	
+	printf("\n%s con Cedula %d adquirio las entradas", cliente.Nombre, cliente.cedula);
+	printf("\n\nGeneral:");
+	while (auxiliarLista1 != NULL && auxiliarLista1 )
+	{
+		if(auxiliarLista1->cedula == cliente.cedula )
+			printf("\nAsiento:\t %d", auxiliarLista1->asiento);	
+		auxiliarLista1 = auxiliarLista1->siguienteDireccion;
+	}
+	printf("\n\nPalco:");
+	while (auxiliarLista2 != NULL && auxiliarLista2->cedula == cliente.cedula )
+	{
+		printf("\nAsiento:\t %d", auxiliarLista2->asiento);	
+		auxiliarLista2 = auxiliarLista2->siguienteDireccion;
+	}
+	printf("\n\nTribuna:");
+	while (auxiliarLista3 != NULL && auxiliarLista3->cedula == cliente.cedula )
+	{
+		printf("\nAsiento:\t %d", auxiliarLista3->asiento);	
+		auxiliarLista3 = auxiliarLista3->siguienteDireccion;
+	}
+		printf("\n\nGeneral:");
+	while (auxiliarLista4 != NULL && auxiliarLista4->cedula == cliente.cedula )
+	{
+		printf("\nAsiento:\t %d", auxiliarLista4->asiento);	
+		auxiliarLista4 = auxiliarLista4->siguienteDireccion;
+	}
+	printf("\n\nPalco:");
+	while (auxiliarLista5 != NULL && auxiliarLista5->cedula == cliente.cedula )
+	{
+		printf("\nAsiento:\t %d", auxiliarLista5->asiento);	
+		auxiliarLista5 = auxiliarLista5->siguienteDireccion;
+	}
+	printf("\n\nTribuna:");
+	while (auxiliarLista6 != NULL && auxiliarLista6->cedula == cliente.cedula )
+	{
+		printf("\nAsiento:\t %d", auxiliarLista6->asiento);	
+		auxiliarLista6 = auxiliarLista6->siguienteDireccion;
+	}
+	
+	
+	///////////////////////////////////////DATO UNICO/////////////////////////////////////////
+	FILE *archivo_unico=NULL;
+	sprintf(buffer,"C:/Users/BRYAN TUALLE/Documents/GitHub/Proyecto-Entradas-a-un-estadio-de-futbol/archivo.txt");
+	archivo_unico=fopen(buffer,"w");
+	fprintf(archivo_unico,"\n\t\t\t\t\tUNIVERSIDAD DE LAS FUERZAS ARMADAS ESPE");
+	fprintf(archivo_unico,"\n\t\t\t\t\t\tESTRUCTURA DE DATOS 2479");
+	fprintf(archivo_unico,"\n\t\t\t\t      SISTEMA DE VENTAS PARA UN ESTADIO DE FUTBOL");
+	fprintf(archivo_unico,"\n\n\t\tAutores:\t Bryan Tualle  y  Sandra Castro");
+	fprintf(archivo_unico,"\n\t\tFecha:\t\t 2017/11/21");
+	fprintf(archivo_unico,"\n\t\tProfesor:\t Ing. Edgar Fernando Solis Acosta");
+	fprintf(archivo_unico,"\n\t\tCarrera:\t Ing. Sistemas e informatica");
+	
+	fprintf(archivo_unico,"\n%s con Cedula %d adquirio las entradas", cliente.Nombre, cliente.cedula);
+	fprintf(archivo_unico,"\n\nGeneral:");
+	while (auxiliarLista1 != NULL && auxiliarLista1->cedula == cliente.cedula )
+	{
+		fprintf(archivo_unico,"\nAsiento:\t %d", auxiliarLista1->asiento);	
+		auxiliarLista1 = auxiliarLista1->siguienteDireccion;
+	}
+	fprintf(archivo_unico,"\n\nPalco:");
+	while (auxiliarLista2 != NULL && auxiliarLista2->cedula == cliente.cedula )
+	{
+		fprintf(archivo_unico,"\nAsiento:\t %d", auxiliarLista2->asiento);	
+		auxiliarLista2 = auxiliarLista2->siguienteDireccion;
+	}
+	fprintf(archivo_unico,"\n\nTribuna:");
+	while (auxiliarLista3 != NULL && auxiliarLista3->cedula == cliente.cedula )
+	{
+		fprintf(archivo_unico,"\nAsiento:\t %d", auxiliarLista3->asiento);	
+		auxiliarLista3 = auxiliarLista3->siguienteDireccion;
+	}
+		fprintf(archivo_unico,"\n\nGeneral:");
+	while (auxiliarLista4 != NULL && auxiliarLista4->cedula == cliente.cedula )
+	{
+		fprintf(archivo_unico,"\nAsiento:\t %d", auxiliarLista4->asiento);	
+		auxiliarLista4 = auxiliarLista4->siguienteDireccion;
+	}
+	fprintf(archivo_unico,"\n\nPalco:");
+	while (auxiliarLista5 != NULL && auxiliarLista5->cedula == cliente.cedula )
+	{
+		fprintf(archivo_unico,"\nAsiento:\t %d", auxiliarLista5->asiento);	
+		auxiliarLista5 = auxiliarLista5->siguienteDireccion;
+	}
+	fprintf(archivo_unico,"\n\nTribuna:");
+	while (auxiliarLista6 != NULL && auxiliarLista6->cedula == cliente.cedula )
+	{
+		fprintf(archivo_unico,"\nAsiento:\t %d", auxiliarLista6->asiento);	
+		auxiliarLista6 = auxiliarLista6->siguienteDireccion;
+	}
+	
+	fclose(archivo_unico);
+
+	//LLAMO A LOS JAR DE JAVA
+	system("start QR.jar ");
+	system("start D:/GENERADORPDF.jar");
+	getch();
+
+}
+
 
 void llenarDatosPartidos(Tiempo fechasPartidos[])
 {
@@ -963,6 +1139,8 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 	int tecla2=0, moveX=1;
 	bool repetirMove = true;
 	
+	long int cedulaBuscar[10], u[10];
+	long int cedulaBuscar2;
 	
 	llenarDatosEstadio(estadio[0], N , "Estadio de Sangolqui", General1, Palco1, Tribuna1);				//Inserto la informacion del estadio y partidos
 	estadio[0].capacidadTotal = N;
@@ -1165,6 +1343,7 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 													{
 														moveX = 2;
 													}
+													repetirMove = true;
 													break;
 												}
 												
@@ -1175,6 +1354,7 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 													{
 														moveX = 1;
 													}
+													repetirMove = true;
 													break;
 												}
 												
@@ -1311,12 +1491,12 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 								if( (i+1) == selec)
 								{
 									color(3,10);
-									printf("%s",subOpciones[i]);
+									printf("AYUDA");
 									color(15,0);
 								}
 								else
 								{
-									printf("%s",subOpciones[i]);
+									printf("AYUDA");
 								}
 								
 							}
@@ -1364,8 +1544,18 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 									coordenada[0]= x;					//Indica el numero de Opcion
 									coordenada[1]= selec;				//Indica el numero de SubOpcion
 									
+									int x;
+									for(;;)
+								    {
+										x=getch();
+							        	if(x==59)
+							        	{
+								        	system("C:\\Users\\BRYAN TUALLE\\Desktop\\Extras\\Ayuda.chm");
+										}
+									}
+									
 									aux=false;
-									repite=false;
+									repite=true;
 									break;
 								}
 								
@@ -1438,8 +1628,23 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 									coordenada[0]= x;					//Indica el numero de Opcion
 									coordenada[1]= selec;				//Indica el numero de SubOpcion
 									
+									system("cls");
+									printf("\nIngrese el numero de la cedula a buscar:");
+									
+									
+									validarCedula(cedulaBuscar);
+									cedulaBuscar2 = convertirCedula(u);
+									int auxcont=0;
+									int auxbusqueda=0;
+									do
+									{
+										if(cliente[auxcont].cedula == cedulaBuscar2) auxbusqueda =auxcont;
+										auxcont++;
+									}while(cliente[auxcont].cedula != cedulaBuscar2);
+									imprimirArchivo( General1, Palco1, Tribuna1, General2,  Palco2, Tribuna2, cliente[auxbusqueda]);
+									getch();
 									aux=false;
-									repite=false;
+									repite=true;
 									break;
 								}
 								
@@ -1533,10 +1738,106 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 									coordenada[0]= x;					//Indica el numero de Opcion
 									coordenada[1]= selec;				//Indica el numero de SubOpcion
 									
-									informacionParido(partidos, selec-1, fechasPartidos);
+									
+									if(informarAsientosDisponibles(General1, Palco1, Tribuna1, General2, Palco2, Tribuna2, selec - 1) == true)
+									{
+										//printf("\n\nAsientos Disponibles ");
+										
+										do
+										{
+											system("cls");
+											informacionParido(partidos, selec-1, fechasPartidos);
+											informarAsientosDisponibles(General1, Palco1, Tribuna1, General2, Palco2, Tribuna2, selec - 1);
+											
+											
+											if(moveX ==1)
+											{
+												color(7,3);
+												gotoxy(30, 20);
+												printf("COMPRAR");
+												color(15,0);
+												gotoxy(80, 20);
+												printf("CANCELAR");
+												
+											}
+											else
+											{
+												gotoxy(30, 20);
+												printf("COMPRAR");
+												color(7,3);
+												gotoxy(80, 20);
+												printf("CANCELAR");
+												color(15,0);
+											}
+											
+											
+											
+											do											// Metodo para que me permita ingresar solo las flechas o ENTER
+											{
+												fflush(stdin);
+												tecla2=getch();
+											}while( (tecla2!=77)&&(tecla2!=75)&&(tecla2!=13) );
+											
+											switch(tecla2)
+											{
+												case 75:								//Izquierda
+												{
+													moveX--;
+													if(moveX<1)
+													{
+														moveX = 2;
+													}
+													repetirMove = true;
+													break;
+												}
+												
+												case 77:
+												{
+													moveX++;
+													if(moveX>2)
+													{
+														moveX = 1;
+													}
+													repetirMove = true;
+													break;
+												}
+												
+												case 13:
+												{
+													
+													if((selec - 1) ==0 && (moveX-1)==0)
+													{
+														
+														ingresoDatos(cliente, contadorPartido1 , General1, Palco1, Tribuna1);
+														contadorPartido1++;
+													}
+													else
+													{
+														if((selec - 1) ==1 && (moveX-1)==0)
+														ingresoDatos(cliente, contadorPartido2, General2, Palco2, Tribuna2);
+														contadorPartido2++;
+													}
+													
+													
+													repetirMove = false;
+													break;
+												}		
+											}
+											
+										}while(repetirMove);
+										
+										
+									}
+									else
+									{
+										printf("\n\nEntradas Agotadas");
+										getch();
+									}
+
+									//informacionParido(partidos, selec-1, fechasPartidos);
 									
 									aux=false;
-									repite=false;
+									repite=true;
 									break;
 								}
 								
@@ -1631,12 +1932,12 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 								if( (i+1) == selec)
 								{
 									color(3,10);
-									printf("%s",subOpciones[i]);
+									printf("AYUDA");
 									color(15,0);
 								}
 								else
 								{
-									printf("%s",subOpciones[i]);
+									printf("AYUDA");
 								}
 								
 							}
@@ -1684,8 +1985,19 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 									coordenada[0]= x;					//Indica el numero de Opcion
 									coordenada[1]= selec;				//Indica el numero de SubOpcion
 									
+									int x;
+									for(;;)
+								    {
+										x=getch();
+							        	if(x==59)
+							        	{
+								        	system("C:\\Users\\BRYAN TUALLE\\Desktop\\Extras\\Ayuda.chm");
+										}
+									}
+
+									
 									aux=false;
-									repite=false;
+									repite=true;
 									break;
 								}
 								
@@ -1758,8 +2070,18 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 									coordenada[0]= x;					//Indica el numero de Opcion
 									coordenada[1]= selec;				//Indica el numero de SubOpcion
 									
+									int x;
+									for(;;)
+								    {
+										x=getch();
+							        	if(x==59)
+							        	{
+								        	system("C:\\Users\\BRYAN TUALLE\\Desktop\\Extras\\Ayuda.chm");
+										}
+									}
+									
 									aux=false;
-									repite=false;
+									repite=true;
 									break;
 								}
 								
@@ -1786,6 +2108,15 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 								Sleep(175);printf(" . ");Sleep(175);printf(" . ");Sleep(175);printf(" . ");
 								repite=false;
 								*/
+								int x;
+								for(;;)
+							    {
+									x=getch();
+						        	if(x==59)
+						        	{
+							        	system("C:\\Users\\Public\\Documents\\ExtrasAyuda\\Ayuda.chm");
+									}
+								}
 							}
 							
 					}
@@ -1862,11 +2193,114 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 									coordenada[0]= x;					//Indica el numero de Opcion
 									coordenada[1]= selec;				//Indica el numero de SubOpcion
 									
-									informacionParido(partidos, selec-1, fechasPartidos);
+									
+									if(informarAsientosDisponibles(General1, Palco1, Tribuna1, General2, Palco2, Tribuna2, selec - 1) == true)
+									{
+										//printf("\n\nAsientos Disponibles ");
+										
+										do
+										{
+											system("cls");
+											informacionParido(partidos, selec-1, fechasPartidos);
+											informarAsientosDisponibles(General1, Palco1, Tribuna1, General2, Palco2, Tribuna2, selec - 1);
+											
+											
+											if(moveX ==1)
+											{
+												color(7,3);
+												gotoxy(30, 20);
+												printf("COMPRAR");
+												color(15,0);
+												gotoxy(80, 20);
+												printf("CANCELAR");
+												
+											}
+											else
+											{
+												gotoxy(30, 20);
+												printf("COMPRAR");
+												color(7,3);
+												gotoxy(80, 20);
+												printf("CANCELAR");
+												color(15,0);
+											}
+											
+											
+											
+											do											// Metodo para que me permita ingresar solo las flechas o ENTER
+											{
+												fflush(stdin);
+												tecla2=getch();
+											}while( (tecla2!=77)&&(tecla2!=75)&&(tecla2!=13) );
+											
+											switch(tecla2)
+											{
+												case 75:								//Izquierda
+												{
+													moveX--;
+													if(moveX<1)
+													{
+														moveX = 2;
+													}
+													repetirMove = true;
+													break;
+												}
+												
+												case 77:
+												{
+													moveX++;
+													if(moveX>2)
+													{
+														moveX = 1;
+													}
+													repetirMove = true;
+													break;
+												}
+												
+												case 13:
+												{
+													
+													if((selec - 1) ==0 && (moveX-1)==0)
+													{
+														
+														ingresoDatos(cliente, contadorPartido1 , General1, Palco1, Tribuna1);
+														contadorPartido1++;
+													}
+													else
+													{
+														if((selec - 1) ==1 && (moveX-1)==0)
+														ingresoDatos(cliente, contadorPartido2, General2, Palco2, Tribuna2);
+														contadorPartido2++;
+													}
+													
+													
+													repetirMove = false;
+													break;
+												}		
+											}
+											
+										}while(repetirMove);
+										
+										
+									}
+									else
+									{
+										printf("\n\nEntradas Agotadas");
+										getch();
+									}
+									
+									
+									
+
 									
 									aux=false;
-									repite=false;
+									repite=true;
 									break;
+									
+									
+									informacionParido(partidos, selec-1, fechasPartidos);
+									
+
 								}
 								
 							}
@@ -1963,12 +2397,12 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 								if( (i+1) == selec)
 								{
 									color(3,10);
-									printf("%s",subOpciones[i]);
+									printf("AYUDA");
 									color(15,0);
 								}
 								else
 								{
-									printf("%s",subOpciones[i]);
+									printf("AYUDA");
 								}
 								
 							}
@@ -2090,8 +2524,18 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 									coordenada[0]= x;					//Indica el numero de Opcion
 									coordenada[1]= selec;				//Indica el numero de SubOpcion
 									
+									int x;
+									for(;;)
+								    {
+										x=getch();
+							        	if(x==59)
+							        	{
+								        	system("C:\\Users\\BRYAN TUALLE\\Desktop\\Extras\\Ayuda.chm");
+										}
+									}
+									
 									aux=false;
-									repite=false;
+									repite=true;
 									break;
 								}
 								
@@ -2108,7 +2552,20 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 								system("cls");
 								coordenada[0]=0;
 								coordenada[1]=0;
+								
+								
+								int x;
+								for(;;)
+							    {
+									x=getch();
+						        	if(x==59)
+						        	{
+							        	system("C:\\Users\\Public\\Documents\\ExtrasAyuda\\Ayuda.chm");
+									}
+								}
+								
 								printf("\t\t\t\t GRACIAS");
+								imagen();
 								Sleep(175);printf(" . ");Sleep(175);printf(" . ");Sleep(175);printf(" . ");
 								repite=false;
 							}
@@ -2125,7 +2582,7 @@ void menuSeleccion(const char *opciones[], int numeroOpciones, const char *parti
 
 main()
 {
-	const char *opciones[]={"  Venta de Entradas   ", "Modificacion Asiento  ", "  Eliminacion de Ventas ", "  Consulta de Entradas  ","   Salir del Sistema   "};
+	const char *opciones[]={"  Venta de Entradas   ", "Modificacion Asiento  ", "  Ayuda de Ventas       ", "  Consulta de Entradas  ","   Salir del Sistema   "};
 	const char *partidos[]={"  Clan Juvenil VS El Nacional  ", "  IDV VS U. Catolica           "};
 	const char *subOpciones[]={"  CEDULA  "};
 	
